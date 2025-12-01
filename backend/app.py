@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from config import Config
@@ -32,6 +32,23 @@ def create_app():
     app.register_blueprint(workouts_bp, url_prefix='/api/workouts')
     app.register_blueprint(schedules_bp, url_prefix='/api/schedules')
     app.register_blueprint(progress_bp, url_prefix='/api/progress')
+    
+    # Root route
+    @app.route('/')
+    def root():
+        return jsonify({
+            'message': 'Personal Trainer Pro API',
+            'status': 'running',
+            'version': '1.0.0',
+            'endpoints': {
+                'auth': '/api/auth',
+                'trainers': '/api/trainers',
+                'clients': '/api/clients',
+                'workouts': '/api/workouts',
+                'schedules': '/api/schedules',
+                'progress': '/api/progress'
+            }
+        }), 200
     
     # Create tables
     with app.app_context():
