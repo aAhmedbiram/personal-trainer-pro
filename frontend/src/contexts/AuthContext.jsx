@@ -46,9 +46,20 @@ export const AuthProvider = ({ children }) => {
       setTrainer(trainer)
       return { success: true }
     } catch (error) {
+      console.error('Login error:', error)
+      let errorMessage = 'Login failed'
+      
+      if (error.response) {
+        errorMessage = error.response.data?.error || `Server error: ${error.response.status}`
+      } else if (error.request) {
+        errorMessage = 'Cannot connect to server. Please check your internet connection or contact support.'
+      } else {
+        errorMessage = error.message || 'An unexpected error occurred'
+      }
+      
       return {
         success: false,
-        error: error.response?.data?.error || 'Login failed'
+        error: errorMessage
       }
     }
   }
@@ -62,9 +73,23 @@ export const AuthProvider = ({ children }) => {
       setTrainer(trainer)
       return { success: true }
     } catch (error) {
+      console.error('Registration error:', error)
+      let errorMessage = 'Registration failed'
+      
+      if (error.response) {
+        // Server responded with error
+        errorMessage = error.response.data?.error || `Server error: ${error.response.status}`
+      } else if (error.request) {
+        // Request made but no response (network error)
+        errorMessage = 'Cannot connect to server. Please check your internet connection or contact support.'
+      } else {
+        // Something else happened
+        errorMessage = error.message || 'An unexpected error occurred'
+      }
+      
       return {
         success: false,
-        error: error.response?.data?.error || 'Registration failed'
+        error: errorMessage
       }
     }
   }
