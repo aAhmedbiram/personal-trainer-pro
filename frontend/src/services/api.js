@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-// Railway backend URL - هذا هو الرابط الصحيح
-const RAILWAY_API_URL = 'https://personal-trainer-pro-personal-trainer-pro.up.railway.app'
+// Railway backend URL - الرابط الصحيح الكامل
+const RAILWAY_API_URL = 'https://personal-trainer-pro-personal-trainer-pro.up.railway.app/api'
 
 // Use environment variable if set, otherwise use Railway URL directly, fallback to proxy for local dev
 const API_URL = import.meta.env.VITE_API_URL || 
