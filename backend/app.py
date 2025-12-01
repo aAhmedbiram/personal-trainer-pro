@@ -9,6 +9,7 @@ from routes.clients import clients_bp
 from routes.workouts import workouts_bp
 from routes.schedules import schedules_bp
 from routes.progress import progress_bp
+import os
 
 def create_app():
     app = Flask(__name__)
@@ -17,7 +18,12 @@ def create_app():
     # Initialize extensions
     db.init_app(app)
     jwt = JWTManager(app)
-    CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+    
+    # CORS configuration - allow all origins in production, localhost in development
+    if os.environ.get('FLASK_ENV') == 'production':
+        CORS(app, resources={r"/api/*": {"origins": "*"}})
+    else:
+        CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
     
     # Register blueprints
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
@@ -33,7 +39,8 @@ def create_app():
     
     return app
 
+app = create_app()
+
 if __name__ == '__main__':
-    app = create_app()
     app.run(debug=True, port=5000)
 
