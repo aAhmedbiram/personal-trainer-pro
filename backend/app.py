@@ -20,8 +20,12 @@ def create_app():
     JWTManager(app)
 
     # حل نهائي لمشكلة CORS مع Vercel + Railway
-    # نسمح لكل الدومينات (بما فيهم personal-trainer-pro.vercel.app)
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    # نسمح لكل الدومينات بدون قيود
+    CORS(app, 
+         resources={r"/*": {"origins": "*"}},
+         supports_credentials=True,
+         allow_headers=["Content-Type", "Authorization"],
+         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
 
     # Register blueprints
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
