@@ -17,13 +17,22 @@ if (typeof window !== 'undefined') {
 }
 
 // إذا كان هناك environment variable، استخدمه (الأولوية العليا)
+// لكن تأكد من أنه الرابط الصحيح (يحتوي على personal-trainer-pro-personal-trainer-pro)
 if (import.meta.env.VITE_API_URL) {
-  API_URL = import.meta.env.VITE_API_URL
-  // تأكد من وجود /api في النهاية
-  if (!API_URL.endsWith('/api')) {
-    API_URL = API_URL.endsWith('/') ? API_URL + 'api' : API_URL + '/api'
+  const envUrl = import.meta.env.VITE_API_URL
+  // إذا كان الرابط صحيح (يحتوي على personal-trainer-pro-personal-trainer-pro)، استخدمه
+  if (envUrl.includes('personal-trainer-pro-personal-trainer-pro')) {
+    API_URL = envUrl
+    // تأكد من وجود /api في النهاية
+    if (!API_URL.endsWith('/api')) {
+      API_URL = API_URL.endsWith('/') ? API_URL + 'api' : API_URL + '/api'
+    }
+    console.log('🔧 Using VITE_API_URL from environment')
+  } else {
+    // إذا كان الرابط خاطئ (ناقص)، تجاهله واستخدم الرابط الصحيح
+    console.warn('⚠️ VITE_API_URL is incorrect, ignoring it and using correct Railway URL')
+    API_URL = RAILWAY_API_URL
   }
-  console.log('🔧 Using VITE_API_URL from environment')
 }
 
 // Debug: Always log the API URL being used
