@@ -66,6 +66,8 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (data) => {
     try {
+      console.log('Registering with data:', data)
+      console.log('API base URL:', api.defaults.baseURL)
       const response = await api.post('/auth/register', data)
       const { token, trainer } = response.data
       localStorage.setItem('token', token)
@@ -74,6 +76,13 @@ export const AuthProvider = ({ children }) => {
       return { success: true }
     } catch (error) {
       console.error('Registration error:', error)
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        requestURL: error.config?.url,
+        baseURL: error.config?.baseURL
+      })
       let errorMessage = 'Registration failed'
       
       if (error.response) {
@@ -81,7 +90,8 @@ export const AuthProvider = ({ children }) => {
         errorMessage = error.response.data?.error || `Server error: ${error.response.status}`
       } else if (error.request) {
         // Request made but no response (network error)
-        errorMessage = 'Cannot connect to server. Please check your internet connection or contact support.'
+        const apiUrl = api.defaults.baseURL || 'not set'
+        errorMessage = `Cannot connect to server at ${apiUrl}. Please check your internet connection or contact support.`
       } else {
         // Something else happened
         errorMessage = error.message || 'An unexpected error occurred'

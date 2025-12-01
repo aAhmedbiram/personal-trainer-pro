@@ -3,6 +3,11 @@ import axios from 'axios'
 // Use environment variable for API URL, fallback to proxy for local development
 const API_URL = import.meta.env.VITE_API_URL || '/api'
 
+// Debug: Log the API URL being used (remove in production if needed)
+if (import.meta.env.DEV) {
+  console.log('API URL:', API_URL)
+}
+
 const api = axios.create({
   baseURL: API_URL,
   headers: {
