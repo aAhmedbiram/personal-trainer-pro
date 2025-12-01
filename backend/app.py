@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from config import Config
@@ -28,12 +28,25 @@ def create_app():
          methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
          expose_headers=["Content-Type", "Authorization"])
     
-    # إضافة CORS headers يدوياً للتأكد
+    # معالجة OPTIONS requests يدوياً (preflight)
+    @app.before_request
+    def handle_preflight():
+        if app.request.method == "OPTIONS":
+            response = app.make_default_options_response()
+            headers = response.headers
+            headers['Access-Control-Allow-Origin'] = '*'
+            headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS, PATCH'
+            headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
+            headers['Access-Control-Max-Age'] = '3600'
+            return response
+    
+    # إضافة CORS headers يدوياً للتأكد على كل response
     @app.after_request
     def after_request(response):
         response.headers.add('Access-Control-Allow-Origin', '*')
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+        response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH')
+        response.headers.add('Access-Control-Max-Age', '3600')
         return response
 
     # Register blueprints
