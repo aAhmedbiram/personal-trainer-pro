@@ -6,8 +6,26 @@ from datetime import datetime
 
 auth_bp = Blueprint('auth', __name__)
 
-@auth_bp.route('/register', methods=['POST'])
+@auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
+    if request.method == 'GET':
+        return jsonify({
+            'endpoint': '/api/auth/register',
+            'method': 'POST',
+            'description': 'Register a new trainer account',
+            'required_fields': ['email', 'password'],
+            'optional_fields': ['first_name', 'last_name', 'phone', 'specialization', 'bio'],
+            'example': {
+                'email': 'trainer@example.com',
+                'password': 'securepassword123',
+                'first_name': 'John',
+                'last_name': 'Doe',
+                'phone': '+1234567890',
+                'specialization': 'Strength Training',
+                'bio': 'Certified personal trainer with 10 years of experience'
+            }
+        }), 200
+    
     try:
         data = request.get_json()
         
@@ -46,8 +64,27 @@ def register():
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-@auth_bp.route('/login', methods=['POST'])
+@auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'GET':
+        return jsonify({
+            'endpoint': '/api/auth/login',
+            'method': 'POST',
+            'description': 'Login to trainer account',
+            'required_fields': ['email', 'password'],
+            'example': {
+                'email': 'trainer@example.com',
+                'password': 'securepassword123'
+            },
+            'response': {
+                'success': {
+                    'message': 'Login successful',
+                    'token': 'JWT access token',
+                    'trainer': 'Trainer object with profile information'
+                }
+            }
+        }), 200
+    
     try:
         data = request.get_json()
         
