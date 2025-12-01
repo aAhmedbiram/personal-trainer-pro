@@ -21,32 +21,14 @@ def create_app():
 
     # حل نهائي لمشكلة CORS مع Vercel + Railway
     # نسمح لكل الدومينات بدون قيود
+    # ⚠️ مهم: لا نضيف headers يدوياً لأن Flask-CORS يضيفها تلقائياً
     CORS(app, 
          resources={r"/*": {"origins": "*"}},
-         supports_credentials=True,
+         supports_credentials=False,  # يجب أن يكون False مع origins: "*"
          allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
          methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-         expose_headers=["Content-Type", "Authorization"])
-    
-    # معالجة OPTIONS requests يدوياً (preflight)
-    @app.before_request
-    def handle_preflight():
-        if request.method == "OPTIONS":
-            response = jsonify({})
-            response.headers.add('Access-Control-Allow-Origin', '*')
-            response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH')
-            response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
-            response.headers.add('Access-Control-Max-Age', '3600')
-            return response
-    
-    # إضافة CORS headers يدوياً للتأكد على كل response
-    @app.after_request
-    def after_request(response):
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
-        response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH')
-        response.headers.add('Access-Control-Max-Age', '3600')
-        return response
+         expose_headers=["Content-Type", "Authorization"],
+         max_age=3600)
 
     # Register blueprints
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
