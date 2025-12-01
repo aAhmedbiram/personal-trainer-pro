@@ -46,8 +46,51 @@ const api = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json'
-  }
+  },
+  timeout: 30000, // 30 seconds timeout
+  withCredentials: false // Important for CORS
 })
+
+// Add request interceptor for debugging
+api.interceptors.request.use(
+  (config) => {
+    console.log('📤 API Request:', {
+      method: config.method?.toUpperCase(),
+      url: config.url,
+      baseURL: config.baseURL,
+      fullURL: `${config.baseURL}${config.url}`
+    })
+    return config
+  },
+  (error) => {
+    console.error('❌ Request Error:', error)
+    return Promise.reject(error)
+  }
+)
+
+// Add response interceptor for debugging
+api.interceptors.response.use(
+  (response) => {
+    console.log('✅ API Response:', {
+      status: response.status,
+      url: response.config.url,
+      data: response.data
+    })
+    return response
+  },
+  (error) => {
+    console.error('❌ Response Error:', {
+      message: error.message,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      url: error.config?.url,
+      baseURL: error.config?.baseURL,
+      fullURL: error.config ? `${error.config.baseURL}${error.config.url}` : 'unknown'
+    })
+    return Promise.reject(error)
+  }
+)
 
 // Add token to requests if available
 const token = localStorage.getItem('token')
