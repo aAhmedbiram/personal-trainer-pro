@@ -9,22 +9,20 @@ from routes.clients import clients_bp
 from routes.workouts import workouts_bp
 from routes.schedules import schedules_bp
 from routes.progress import progress_bp
-import os
+
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-    
+
     # Initialize extensions
     db.init_app(app)
-    jwt = JWTManager(app)
-    
-    # CORS configuration - allow all origins in production, localhost in development
-    if os.environ.get('FLASK_ENV') == 'production':
-        CORS(app, resources={r"/api/*": {"origins": "*"}})
-    else:
-        CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
-    
+    JWTManager(app)
+
+    # حل نهائي لمشكلة CORS مع Vercel + Railway
+    # نسمح لكل الدومينات (بما فيهم personal-trainer-pro.vercel.app)
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
+
     # Register blueprints
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(trainers_bp, url_prefix='/api/trainers')
@@ -32,7 +30,7 @@ def create_app():
     app.register_blueprint(workouts_bp, url_prefix='/api/workouts')
     app.register_blueprint(schedules_bp, url_prefix='/api/schedules')
     app.register_blueprint(progress_bp, url_prefix='/api/progress')
-    
+
     # Root route
     @app.route('/')
     def root():
@@ -49,15 +47,15 @@ def create_app():
                 'progress': '/api/progress'
             }
         }), 200
-    
-    # Create tables
+
+    # Create tables if not exist
     with app.app_context():
         db.create_all()
-    
+
     return app
+
 
 app = create_app()
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
-
