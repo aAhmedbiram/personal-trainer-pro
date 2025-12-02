@@ -34,16 +34,28 @@ def schedules():
     elif request.method == 'POST':
         try:
             data = request.get_json()
-            
+
+            # Normalize and validate IDs coming from JSON (often as strings)
+            raw_client_id = data.get('client_id')
+            if raw_client_id is None or str(raw_client_id).strip() == '':
+                return jsonify({'error': 'client_id is required'}), 400
+            client_id = int(raw_client_id)
+
+            # workout_id is optional; treat empty string as NULL
+            raw_workout_id = data.get('workout_id')
+            workout_id = None
+            if raw_workout_id not in (None, ''):
+                workout_id = int(raw_workout_id)
+
             # Verify client belongs to trainer
-            client = Client.query.filter_by(id=data['client_id'], trainer_id=trainer_id).first()
+            client = Client.query.filter_by(id=client_id, trainer_id=trainer_id).first()
             if not client:
                 return jsonify({'error': 'Client not found'}), 404
             
             schedule = Schedule(
                 trainer_id=trainer_id,
-                client_id=data['client_id'],
-                workout_id=data.get('workout_id'),
+                client_id=client_id,
+                workout_id=workout_id,
                 title=data['title'],
                 description=data.get('description'),
                 start_time=datetime.fromisoformat(data['start_time']),
@@ -77,7 +89,15 @@ def schedule_detail(schedule_id):
     elif request.method == 'PUT':
         try:
             data = request.get_json()
-            
+
+            # Normalize optional workout_id on update (empty string -> NULL)
+            if 'workout_id' in data:
+                raw_workout_id = data.get('workout_id')
+                if raw_workout_id in (None, ''):
+                    schedule.workout_id = None
+                else:
+                    schedule.workout_id = int(raw_workout_id)
+
             if 'title' in data:
                 schedule.title = data['title']
             if 'description' in data:
@@ -92,8 +112,6 @@ def schedule_detail(schedule_id):
                 schedule.location = data['location']
             if 'notes' in data:
                 schedule.notes = data['notes']
-            if 'workout_id' in data:
-                schedule.workout_id = data['workout_id']
             
             db.session.commit()
             return jsonify(schedule.to_dict()), 200
