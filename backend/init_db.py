@@ -14,3 +14,5 @@ with app.app_context():
     print("Database tables created successfully!")
     print("You can now start the application with: python app.py")
 
+
+

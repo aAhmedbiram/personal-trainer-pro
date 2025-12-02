@@ -59,3 +59,5 @@ https://personal-trainer-pro-personal-trainer-pro.up.railway.app/
 2. Railway deployment logs (آخر deployment)
 3. Console errors من المتصفح (F12)
 
+
+

@@ -59,3 +59,5 @@ class Exercise(db.Model):
             'notes': self.notes
         }
 
+
+

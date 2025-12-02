@@ -41,3 +41,5 @@ def trainer_profile():
             db.session.rollback()
             return jsonify({'error': str(e)}), 500
 
+
+

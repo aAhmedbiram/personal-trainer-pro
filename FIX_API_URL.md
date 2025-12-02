@@ -66,3 +66,5 @@ https://personal-trainer-pro.up.railway.app
 4. اذهب إلى Settings → Networking
 5. انسخ "Public Domain" - هذا هو الرابط الصحيح
 
+
+

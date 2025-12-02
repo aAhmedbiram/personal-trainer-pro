@@ -101,3 +101,5 @@ POST .../api/auth/register 500
 2. Network tab (F12 → Network → حاول التسجيل → انسخ Request/Response)
 3. Railway logs (آخر deployment)
 
+
+

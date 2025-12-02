@@ -79,3 +79,5 @@ https://personal-trainer-pro-personal-trainer-pro.up.railway.app/
 
 Should show JSON with API info. If this doesn't work, the backend issue is on Railway side.
 
+
+

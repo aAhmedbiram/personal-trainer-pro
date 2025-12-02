@@ -6,3 +6,5 @@ from .progress import ProgressEntry
 
 __all__ = ['Trainer', 'Client', 'Workout', 'Exercise', 'Schedule', 'ProgressEntry']
 
+
+

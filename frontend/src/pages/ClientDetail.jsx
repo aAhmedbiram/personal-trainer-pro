@@ -165,3 +165,5 @@ const ClientDetail = () => {
 
 export default ClientDetail
 
+
+

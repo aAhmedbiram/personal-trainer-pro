@@ -127,3 +127,5 @@ def workout_detail(workout_id):
             db.session.rollback()
             return jsonify({'error': str(e)}), 500
 
+
+

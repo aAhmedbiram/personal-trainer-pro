@@ -114,3 +114,5 @@ def progress_entry_detail(entry_id):
             db.session.rollback()
             return jsonify({'error': str(e)}), 500
 
+
+

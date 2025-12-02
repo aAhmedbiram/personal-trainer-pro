@@ -112,3 +112,5 @@ def schedule_detail(schedule_id):
             db.session.rollback()
             return jsonify({'error': str(e)}), 500
 
+
+

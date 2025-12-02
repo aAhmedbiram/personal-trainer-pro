@@ -113,3 +113,5 @@ def client_detail(client_id):
             db.session.rollback()
             return jsonify({'error': str(e)}), 500
 
+
+

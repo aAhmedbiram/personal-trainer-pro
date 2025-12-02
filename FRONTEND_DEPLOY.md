@@ -44,3 +44,5 @@ Once deployed, your frontend will be available at a Vercel URL like:
 
 The frontend will automatically connect to your Railway backend API.
 
+
+

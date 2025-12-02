@@ -66,7 +66,28 @@ const Clients = () => {
       fetchClients()
     } catch (error) {
       console.error('Error creating client:', error)
-      alert('Error creating client: ' + (error.response?.data?.error || 'Unknown error'))
+
+      // Try to extract the most useful error message from the response / network error
+      let message = 'Unknown error'
+
+      if (error.response) {
+        // Backend responded with an error
+        const data = error.response.data || {}
+        message =
+          data.error ||
+          data.msg || // flask-jwt-extended default key
+          data.message ||
+          `Server error (status ${error.response.status})`
+      } else if (error.request) {
+        // Request was sent but no response received (network / CORS / server down)
+        message =
+          'Cannot reach the server. Please check your internet connection or contact support.'
+      } else {
+        // Something else on the frontend (e.g. axios config)
+        message = error.message || message
+      }
+
+      alert('Error creating client: ' + message)
     }
   }
 
@@ -289,4 +310,6 @@ const Clients = () => {
 }
 
 export default Clients
+
+
 
