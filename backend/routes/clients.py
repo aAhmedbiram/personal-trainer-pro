@@ -10,7 +10,8 @@ clients_bp = Blueprint('clients', __name__)
 @clients_bp.route('', methods=['GET', 'POST'])
 @jwt_required()
 def clients():
-    trainer_id = get_jwt_identity()
+    # JWT identity is stored as string; convert to int for DB queries
+    trainer_id = int(get_jwt_identity())
     trainer = Trainer.query.get(trainer_id)
     
     if not trainer:

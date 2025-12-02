@@ -52,7 +52,9 @@ def register():
         db.session.commit()
         
         # Generate token
-        access_token = create_access_token(identity=trainer.id)
+        # flask-jwt-extended / PyJWT now require the subject ("sub") claim to be a string
+        # so we store the trainer id as a string in the token
+        access_token = create_access_token(identity=str(trainer.id))
         
         return jsonify({
             'message': 'Registration successful',
@@ -96,7 +98,8 @@ def login():
         if not trainer or not trainer.check_password(data['password']):
             return jsonify({'error': 'Invalid email or password'}), 401
         
-        access_token = create_access_token(identity=trainer.id)
+        # Store trainer id as string in JWT subject to satisfy PyJWT requirements
+        access_token = create_access_token(identity=str(trainer.id))
         
         return jsonify({
             'message': 'Login successful',
@@ -111,7 +114,8 @@ def login():
 @jwt_required()
 def get_current_trainer():
     try:
-        trainer_id = get_jwt_identity()
+        # Identity is stored as string in JWT, convert back to int for DB queries
+        trainer_id = int(get_jwt_identity())
         trainer = Trainer.query.get(trainer_id)
         
         if not trainer:

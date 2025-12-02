@@ -10,7 +10,8 @@ progress_bp = Blueprint('progress', __name__)
 @progress_bp.route('', methods=['GET', 'POST'])
 @jwt_required()
 def progress_entries():
-    trainer_id = get_jwt_identity()
+    # JWT identity is stored as string; convert to int for DB queries
+    trainer_id = int(get_jwt_identity())
     
     if request.method == 'GET':
         client_id = request.args.get('client_id')
@@ -64,7 +65,7 @@ def progress_entries():
 @progress_bp.route('/<int:entry_id>', methods=['GET', 'PUT', 'DELETE'])
 @jwt_required()
 def progress_entry_detail(entry_id):
-    trainer_id = get_jwt_identity()
+    trainer_id = int(get_jwt_identity())
     
     entry = ProgressEntry.query.get(entry_id)
     if not entry:

@@ -9,7 +9,7 @@ workouts_bp = Blueprint('workouts', __name__)
 @workouts_bp.route('', methods=['GET', 'POST'])
 @jwt_required()
 def workouts():
-    trainer_id = get_jwt_identity()
+    trainer_id = int(get_jwt_identity())
     
     if request.method == 'GET':
         client_id = request.args.get('client_id')
@@ -68,7 +68,7 @@ def workouts():
 @workouts_bp.route('/<int:workout_id>', methods=['GET', 'PUT', 'DELETE'])
 @jwt_required()
 def workout_detail(workout_id):
-    trainer_id = get_jwt_identity()
+    trainer_id = int(get_jwt_identity())
     workout = Workout.query.filter_by(id=workout_id, trainer_id=trainer_id).first()
     
     if not workout:

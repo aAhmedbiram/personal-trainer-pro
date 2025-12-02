@@ -10,7 +10,7 @@ schedules_bp = Blueprint('schedules', __name__)
 @schedules_bp.route('', methods=['GET', 'POST'])
 @jwt_required()
 def schedules():
-    trainer_id = get_jwt_identity()
+    trainer_id = int(get_jwt_identity())
     
     if request.method == 'GET':
         start_date = request.args.get('start_date')
@@ -65,7 +65,7 @@ def schedules():
 @schedules_bp.route('/<int:schedule_id>', methods=['GET', 'PUT', 'DELETE'])
 @jwt_required()
 def schedule_detail(schedule_id):
-    trainer_id = get_jwt_identity()
+    trainer_id = int(get_jwt_identity())
     schedule = Schedule.query.filter_by(id=schedule_id, trainer_id=trainer_id).first()
     
     if not schedule:
